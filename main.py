@@ -80,6 +80,11 @@ async def check_status():
         return {"status": "success", "message": f"Status: {status_text}. Email sent."}
     else:
         raise HTTPException(status_code=500, detail="Could not retrieve driver's license status.")
+    
+@app.get("/")
+async def root():
+    """Root endpoint."""
+    return {"message": "Welcome to the Driving License Status Checker API!"}
 
 # For local testing (optional)
 if __name__ == "__main__":
