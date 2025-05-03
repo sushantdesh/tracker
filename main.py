@@ -26,7 +26,7 @@ def check_dl_status(dln: str, issue_dt: str = "04/30/2025"):
     }
     session = requests.Session()
     try:
-        response = session.post(url, headers=headers, data=payload, timeout=10)
+        response = session.post(url, headers=headers, data=payload, timeout=50)
         response.raise_for_status()  # Raise an exception for bad status codes
         soup = BeautifulSoup(response.text, 'html.parser')
         status_row = soup.find_all("div", class_="row details")
@@ -70,13 +70,14 @@ def send_status_email(status: str, html_content: str):
 @app.get("/check_dl_status")
 async def check_status():
     """Endpoint to check driver's license status (DLN from env) and send email."""
-    dln = os.environ.get('DLN')
+    # dln = os.environ.get('DLN')
+    dln = 'd25279395148'
     if not dln:
         raise HTTPException(status_code=400, detail="DLN environment variable not set.")
 
     status_text, html_content = check_dl_status(dln)
     if status_text:
-        send_status_email(status_text, html_content)
+        # send_status_email(status_text, html_content)
         return {"status": "success", "message": f"Status: {status_text}. Email sent."}
     else:
         raise HTTPException(status_code=500, detail="Could not retrieve driver's license status.")
